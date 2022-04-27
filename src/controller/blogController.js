@@ -119,15 +119,16 @@ const deleteblog = async function (req, res) {
     try {
         let blogId = req.params.blogId;
         let blog = await blogModel.findById(blogId)
-        if (!blog) {
-        return res.status(404).send("No such blog exists");
+        if (!blog){
+            return res.status(404).send("No such blog exists");
         }
+
         if(blog.isDeleted){
-        return res.status(400).send({ status: false, msg: "Blog not found, may be deleted" })
+            return res.status(400).header({ status: false, msg: "Blog not found, may be deleted" })
         }
 
         let deletedtedUser = await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true } }, { new: true });
-        res.status(201).send({ msg: "done", data: deletedtedUser });
+        res.status(200).send({ msg: "done", data: deletedtedUser });
     }
     catch(err){
         res.status(500).send({ msg: "Error", error: err.message })
@@ -148,17 +149,17 @@ const deleteblog2 = async function (req, res) {
         let authorId = req.query.authorId
         let tags = req.query.tags
         let subcategory = req.query.subcategory
-        let isPublished = req.query.isPublished
+        //let isPublished = req.query.isPublished
 
-        let fetchdata = await blogModel.find({$or:[{category: category  },{tags: tags},{subcategory: subcategory},{isPublished: isPublished}, { authorId: authorId }]})
+        let fetchdata = await blogModel.find({$or:[{category: category  },{tags: tags},{subcategory: subcategory}, { authorId: authorId }]})
 
         if(fetchdata.length == 0){
         res.status(404).send({ status: false, msg: " Blog document doesn't exist "})
         }
 
-        let deletedtedUser = await blogModel.updateMany({$or:[{category: category  },{tags: tags},{subcategory: subcategory},{isPublished: isPublished}, { authorId: authorId }]}, { $set: { isDeleted: true } }, { new: true });
+        let deletedtedUser = await blogModel.updateMany({$or:[{category: category  },{tags: tags},{subcategory: subcategory},{isPublished: true}, { authorId: authorId }]}, { $set: { isDeleted: true } }, { new: true });
 
-        res.status(201).send({ msg: "done", data: deletedtedUser });
+        res.status(200).send({ msg: "done", data: deletedtedUser });
     }
     catch(err){
         res.status(500).send({ msg: "Error", error: err.message })
@@ -168,7 +169,6 @@ const deleteblog2 = async function (req, res) {
 
 
 module.exports.createBlog = createBlog;
-module.exports.getBlogs = getBlogs;
 module.exports.getBlogs = getBlogs;
 module.exports.updateblog = updateblog;
 module.exports.deleteblog = deleteblog;

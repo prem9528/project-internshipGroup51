@@ -37,7 +37,6 @@ const authorization1 = async function(req,res,next){
         next();
     }
     catch(err){
-        console.log("Helllo");
         res.status(500).send({ msg: "Error", error: err.message});
     }
 }

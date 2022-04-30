@@ -1,5 +1,16 @@
 const authorModel = require("../models/authorModel");
 const jwt = require("jsonwebtoken");
+const res = require("express/lib/response");
+
+const typeChecking = function(data){
+    if(typeof data !== 'string'){
+        return false;
+    }else if(typeof data === 'string' && data.trim().length == 0){
+        return false;
+    }else{
+        return true;
+    }
+}
 
 const createAuthor = async function (req, res) {
     
@@ -7,20 +18,36 @@ const createAuthor = async function (req, res) {
         let data = req.body;
         
         let {fname , lname , title , email , password} = data;
+
         if(!fname){
             return res.status(400).send({msg: "First Name is required...!"});
         }
+        if(!typeChecking(fname)){
+            return res.status(400).send({msg: "Please enter the first name in right format...!"});
+        }
         if(!lname){
-            return res.status(400).send({msg: "LastName is required..!"});
+            return res.status(400).send({msg: "Last name is required...!"});
+        }
+        if(!typeChecking(lname)){
+            return res.status(400).send({msg: "Please enter the last name in right format....!"});
         }
         if(!title){
             return res.status(400).send({msg: "Title is required...!"});
         }
+        if(!typeChecking(title)){
+            return res.status(400).send({msg: "Please enter the title in right format....!"});
+        }
         if(!email){
             return res.status(400).send({msg: "Email is required...!"});
         }
+        if(!typeChecking(email)){
+            return res.status(400).send({msg: "Please enter the email in right format...!"});
+        }
         if(!password){
             return res.status(400).send({msg: "Password is required...!"});
+        }
+        if(!typeChecking(password)){
+            return res.status(400).send({msg: "Please enter the password in right format...!"});
         }
 
         let createData = await authorModel.create(data);
@@ -33,7 +60,6 @@ const createAuthor = async function (req, res) {
 
 
 const login = async function (req, res) {
-
     try {
         let emailId = req.body.email;
         let pass = req.body.password;

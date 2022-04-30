@@ -1,5 +1,17 @@
 const blogModel = require("../models/blogModel");
 const authorModel = require("../models/authorModel");
+const mongoose = require("mongoose");
+
+
+const stringChecking = function(data){
+    if(typeof data !== 'string'){
+        return false;
+    }else if(typeof data === 'string' && data.trim().length == 0){
+        return false;
+    }else{
+        return true;
+    }
+}
 
 
 //API2 
@@ -25,14 +37,23 @@ const createBlog = async function(req,res){
         if(!title){
             return res.status(400).send({msg: "Title is required...!"});
         }
+        if(!stringChecking(title)){
+            return res.status(400).send({msg: "Please enter the title in right format...!"});
+        }
         if(!body){
             return res.status(400).send({msg: "Body is required...!"});
+        }
+        if(!stringChecking(body)){
+            return res.status(400).send({msg: "Please enter the body in right format...!"});
         }
         if(!authorId){
             return res.status(400).send({msg: "AuthorId is required...!"});
         }
         if(!category){
             return res.status(400).send({msg: "Category is required...!"});
+        }
+        if(!stringChecking(category)){
+            return res.status(400).send({msg: "Please enter the category in right format...!"});
         }
         if(!await authorModel.findById(authId)){
             res.status(401).send({Msg : "AuthorId is not valid...!"});
@@ -69,7 +90,19 @@ const getBlogs = async function(req,res){
         let tag = req.query.tags;
         let subcat = req.query.subcategory;
 
-        let filterData = await blogModel.find({ isPublished : true , isDeleted : false , $or : [ {authorId : id} , {category : category}, {subcategory : {$in : [subcat]}}, {tags : {$in : [tag]}}]});
+        if(!stringChecking(category)){
+            return res.status(400).send({msg: "Please enter the category in right format...!"});
+        }
+
+        if(!stringChecking(tag)){
+            return res.status(400).send({msg: "Please enter the tag in right format...!"});
+        }
+
+        if(!stringChecking(subcat)){
+            return res.status(400).send({msg: "Please enter the subcat in right format...!"});
+        }
+
+        let filterData = await blogModel.find({ isPublished : true , isDeleted : false , $or : [ {authorId : id} , {category : category}, {subcategory : {$in : [subcat]}}, {tags : {$in : [tag]}}]}).count();
 
         if(filterData.length == 0){
             return res.status(404).send({status : false , msg : "Documents not found.."});
@@ -97,10 +130,34 @@ const updateblog = async function (req, res) {
     try{  
         let data =  req.body; 
         let blogId = req.params.blogId;
-        const tag1 = req.body.tags;
-        const subcategory = req.body.subcategory;
-        const title = req.body.title;
-        const bod = req.body.body;
+
+        const {title,bod,tag1,subcategory} = data;
+
+        if(!title){
+            return res.status(400).send({msg : "Title must be sent,as it needs to be updated.!"});
+        }
+        if(!bod){
+            return res.status(400).send({msg : "Body must be sent,as it needs tp be updated.!"});
+        }
+        if(!tag1){
+            return res.status(400).send({msg : "Tag must be sent,as it needs to be added..!"});
+        }
+        if(!subcategory){
+            return res.status(400).send({msg : "Subcategory must be sent,as it needs to be added..!"});
+        }
+
+        if(!stringChecking(title)){
+            return res.status(400).send({msg: "Please enter the title in right format...!"});
+        }
+        if(!stringChecking(bod)){
+            return res.status(400).send({msg: "Please enter the body in right format...!"});
+        }
+        if(!stringChecking(tag1)){
+            return res.status(400).send({msg: "Please enter the tag in right format...!"});
+        }
+        if(!stringChecking(subcategory)){
+            return res.status(400).send({msg: "Please enter the subcategory in right format...!"});
+        }
 
         let blog = await blogModel.findById(blogId);
         
@@ -108,7 +165,7 @@ const updateblog = async function (req, res) {
             return res.status(404).send("No such blog exists");
         }
 
-        if(blog.isDeleted){
+        if(blog.isDeleted == true){
             return res.status(400).send({ status: false, msg: "Blog not found, may be deleted" })
         }
 

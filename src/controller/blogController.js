@@ -95,7 +95,7 @@ const getBlogs = async function (req, res) {
         if (category != undefined) {
             if (!stringChecking(category))
                 return res.status(400).send({ msg: "Please enter the category in right format...!" })
-            filter.category = category
+            filter.category = category    
         }
 
         if (tags != undefined) {
@@ -267,7 +267,7 @@ const deleteblog2 = async function (req, res) {
         // })
         // console.log(giveData)
 
-        let deletedtedUser = await blogModel.updateMany({ authorId:req.authorId }, { $set: { isDeleted: false, deletedAt: Date.now() } }, { new: true });
+        let deletedtedUser = await blogModel.updateMany(query1, { $set: { isDeleted: false, deletedAt: Date.now() } }, { new: true });
 
         res.status(200).send({ msg: "done", data: deletedtedUser });
     }

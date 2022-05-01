@@ -3,7 +3,7 @@ const authorModel = require("../models/authorModel");
 const mongoose = require("mongoose");
 
 
-const stringChecking = function (data) { 
+const stringChecking = function (data) {
     if (typeof data !== 'string') {
         return false;
     } else if (typeof data === 'string' && data.trim().length == 0) {
@@ -36,25 +36,27 @@ const createBlog = async function (req, res) {
 
         if (!title) {
             return res.status(400).send({ msg: "Title is required...!" });
-
         }
         if (!stringChecking(title)) {
             return res.status(400).send({ msg: "Please enter the title in right format...!" });
         }
+
         if (!body) {
             return res.status(400).send({ msg: "Body is required...!" });
         }
         if (!stringChecking(body)) {
             return res.status(400).send({ msg: "Please enter the body in right format...!" });
         }
-        if (!authorId) {
-            return res.status(400).send({ msg: "AuthorId is required...!" });
-        }
+
         if (!category) {
             return res.status(400).send({ msg: "Category is required...!" });
         }
         if (!stringChecking(category)) {
             return res.status(400).send({ msg: "Please enter the category in right format...!" });
+        }
+
+        if (!authorId) {
+            return res.status(400).send({ msg: "AuthorId is required...!" });
         }
         if (!await authorModel.findById(authId)) {
             res.status(401).send({ Msg: "AuthorId is not valid...!" });
@@ -95,33 +97,33 @@ const getBlogs = async function (req, res) {
         if (category != undefined) {
             if (!stringChecking(category))
                 return res.status(400).send({ msg: "Please enter the category in right format...!" })
-            filter.category = category    
+            filter.category = category
         }
 
         if (tags != undefined) {
-            if (!stringChecking(tags)) 
+            if (!stringChecking(tags))
                 return res.status(400).send({ msg: "Please enter the tag in right format...!" });
-                filter.tags = tags
+            filter.tags = tags
         }
 
         if (subcategory != undefined) {
-            if (!stringChecking(subcategory)) 
+            if (!stringChecking(subcategory))
                 return res.status(400).send({ msg: "Please enter the subcategory in right format...!" });
-                filter.subcategory = subcategory
+            filter.subcategory = subcategory
         }
 
         if (authorId != undefined) {
-            if (!stringChecking(authorId)) 
+            if (!stringChecking(authorId))
                 return res.status(400).send({ msg: "Please enter the authorId in right format...!" });
-                filter.authorId = authorId
+            filter.authorId = authorId
         }
 
-       
-        filter.isDeleted=false
-        filter.isPublished=true
+
+        filter.isDeleted = false
+        filter.isPublished = true
         console.log(filter)
 
-        let filterData = await blogModel.find(filter ).count();
+        let filterData = await blogModel.find(filter).count();
 
         if (filterData.length == 0) {
             return res.status(404).send({ status: false, msg: "Documents not found.." });
@@ -165,24 +167,24 @@ const updateblog = async function (req, res) {
         //     return res.status(400).send({ msg: "Subcategory must be sent,as it needs to be added..!" });
         // }
 
-        if (title != undefined){ 
-        if (!stringChecking(title)) 
-            return res.status(400).send({ msg: "Please enter the title in right format...!" });
+        if (title != undefined) {
+            if (!stringChecking(title))
+                return res.status(400).send({ msg: "Please enter the title in right format...!" });
         }
 
-        if (body != undefined){ 
-        if (!stringChecking(body)) 
-            return res.status(400).send({ msg: "Please enter the body in right format...!" });
+        if (body != undefined) {
+            if (!stringChecking(body))
+                return res.status(400).send({ msg: "Please enter the body in right format...!" });
         }
 
-        if (tags != undefined){ 
-        if (!stringChecking(tags)) 
-            return res.status(400).send({ msg: "Please enter the tag in right format...!" });
+        if (tags != undefined) {
+            if (!stringChecking(tags))
+                return res.status(400).send({ msg: "Please enter the tag in right format...!" });
         }
 
-        if (subcategory != undefined){ 
-        if (!stringChecking(subcategory)) 
-            return res.status(400).send({ msg: "Please enter the subcategory in right format...!" });
+        if (subcategory != undefined) {
+            if (!stringChecking(subcategory))
+                return res.status(400).send({ msg: "Please enter the subcategory in right format...!" });
         }
 
         let blog = await blogModel.findById(blogId);
@@ -256,10 +258,10 @@ const deleteblog2 = async function (req, res) {
         const query1 = req.query
 
         let fetchdata = await blogModel.find(query1)
-        
+
 
         if (fetchdata.length == 0) {
-           return res.status(404).send({ status: false, msg: " Blog document doesn't exist " })
+            return res.status(404).send({ status: false, msg: " Blog document doesn't exist " })
         }
         // const giveData = fetchdata.map(blog => {
         //     if (blog.authorId == req.authorId)

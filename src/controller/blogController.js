@@ -12,7 +12,7 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0
 }
 const isValidObjectId = function (ObjectId) {
-    return mongoose.Schema.Types.ObjectId.isValid(ObjectId)
+    return mongoose.Types.ObjectId.isValid(ObjectId)
 }
 //API2 b
 
@@ -34,7 +34,7 @@ const createBlog = async function (req, res) {
             res.status(400).send({ status: false, message: "Invalid request parameters. Please provide another details" })
             return
         }
-        let { title, body, authorId, tags, subcategory, isPublished, category } = data;
+        let { title, body, authorId, tags, subcategory, isPublished, category } = requestBody;
 
         if (!isValid(title)) {
             res.status(400).send({ status: false, message: "Blog Title is required" })
@@ -67,7 +67,7 @@ const createBlog = async function (req, res) {
             authorId,
             category,
             isPublished: isPublished ? isPublished : false,
-            publishedAt: isPublished ? new Date.now() : null
+            publishedAt: isPublished ? new Date() : null
         }
         if(tags){
             if(Array.isArray(tags)){
@@ -87,8 +87,8 @@ const createBlog = async function (req, res) {
             }
            
         }
-        const newBlog = await blogData.create(blogData)
-        res.status(201).send({status: true.valueOf, message: "New blog created sucessfully", data: newBlog})
+        const newBlog = await blogModel.create(blogData)
+        res.status(201).send({status: true, message: "New blog created sucessfully", data: newBlog})
     }
     catch (error) {
         res.status(500).send({ status: false, message: error.message });
@@ -175,7 +175,7 @@ const updateblog = async function (req, res) {
             res.status(404).send({ status: false, message: "Blog not found" })
             return
         }
-        if (blog.authorId.tostring() !== authorIdFromToken) {
+        if (blog.authorId.toString() !== authorIdFromToken) {
             res.status(401).send({ status: false, message: "Unauthorized access! Owner info doesn't match" });
             return
         }
@@ -220,7 +220,7 @@ const updateblog = async function (req, res) {
                 updatedBlogData[`$addToSet`][`subcategory`]= subcategory
             }
         }
-        const updatedBlog= await blogModel.findOneAndUpdate({_id: blogId}, updatedBlogData, {new: true})
+        const updatedBlog= await blogModel.findOneAndUpdate({_id: blogId},updatedBlogData, {new: true})
         res.status(200).send({status: true, messgae: "Blog updated sucessfully", data: updatedBlog})
     }
     catch (error) {
@@ -254,11 +254,11 @@ const deleteBlogById = async function (req, res) {
             res.status(404).send({ status: false, message: "Blog not found" })
             return
         }
-        if (blog.authorId.tostring() !== authorIdFromToken) {
+        if (blog.authorId.toString() !== authorIdFromToken) {
             res.status(401).send({ status: false, message: "Unauthorized access! Owner info doesn't match" });
             return
         }
-        await blogModel.findOneAndUpdate({_id: blogId}, {$set: {isDeleted: true.valueOf, deletedAt: new Date()}})
+        await blogModel.findOneAndUpdate({_id: blogId}, {$set: {isDeleted: true, deletedAt: new Date()}})
     }
     catch (error) {
         res.status(500).send({ status: false, message: error.message });

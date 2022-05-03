@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const objectId =  mongoose.Schema.Types.ObjectId;
+// const objectId =  mongoose.Schema.Types.ObjectId;
 
 const blogSchema = new mongoose.Schema({
     title : {type : String , required : "Blog title is required", trim: true},
     body : {type : String , required : "Blog body is required", trim: true},
-    authorId : {type : objectId , ref : "Author" , required : "Blog Author is required"},
+    authorId : {type : mongoose.Types.ObjectId , refs : "Author" , required : "Blog Author is required"},
     tags : [{type : String, trim: true}],
     category : {type : String, trim: true , required : "Blog category is required"},
     subcategory : [{type : String, trim: true}],

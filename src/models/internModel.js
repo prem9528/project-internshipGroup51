@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-// const objectId =  mongoose.Schema.Types.ObjectId;
+const Yup = require("yup");
+
 
 const internSchema = new mongoose.Schema({
     name: {
@@ -29,7 +30,7 @@ const internSchema = new mongoose.Schema({
             .min(10)
             .max(12)
             .required('A phone number is required'), 
-            required: "Mobile number is required",
+            // required: "Mobile number is required",
             unique: true
         },
          collegeId:{
@@ -37,7 +38,7 @@ const internSchema = new mongoose.Schema({
               refs: "College", 
               required: "College name is required" },
             isDeleted: { 
-                type: boolean, 
+                type: Boolean, 
                 default: false
              } 
         }, { timestamps: true });   

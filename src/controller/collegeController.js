@@ -1,4 +1,4 @@
-const { default: mongoose } = require('mongoose')
+// const mongoose = require('mongoose')
 const collegeModel = require('../models/collegeModel')
 const internModel = require('../models/internModel')
 
@@ -11,6 +11,10 @@ const isValid = function (value) {
 const isValidRequestBody = function (reqBody) {
     return Object.keys(reqBody).length > 0
 }
+const isValidURL = function (string) {
+    let res = string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+    return (res !== null)
+};
 
 // const isValidObjectId = function(objectId){
 //     return mongoose.Schema.Types.isValid(objectId)
@@ -37,6 +41,9 @@ const createCollege = async function (req, res) {
         if (!isValid(logoLink)) {
             return res.status(400).send({ status: false, message: "logoLink is required" })
         }
+        if (!isValidURL(logoLink)) {
+            res.status(400).send({ status: false, message:"logo url is not valid! Please Enter a valid url"})
+            return}
 
         const isNamePresent = await collegeModel.findOne({ name: name })
 
@@ -44,7 +51,7 @@ const createCollege = async function (req, res) {
             return res.status(400).send({ status: false, message: "name already exist" })
         }
         const newCollege = await collegeModel.create(requestBody)
-
+        
         res.status(201).send({ status: true, message: "new college entry created", data: newCollege })
 
 

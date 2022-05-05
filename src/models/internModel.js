@@ -27,16 +27,14 @@ const internSchema = new mongoose.Schema({
             .typeError("That doesn't look like a phone number")
             .positive("A phone number can't start with a minus")
             .integer("A phone number can't include a decimal point")
-            .min(10)
-            .max(12)
-            .required('A phone number is required'), 
-            // required: "Mobile number is required",
+            .min(10),
+            required: "Mobile number is required",
             unique: true
         },
          collegeId:{
               type: mongoose.Types.ObjectId, 
-              refs: "College", 
-              required: "College name is required" },
+              refs: "College"
+            },
             isDeleted: { 
                 type: Boolean, 
                 default: false

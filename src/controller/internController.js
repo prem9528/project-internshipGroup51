@@ -63,12 +63,12 @@ const createIntern = async function (req, res) {
         }
         const collegeID = collegeNamePresent._id
         requestBody["collegeId"] = collegeID;
-
-
-        let savedData = await internModel.create(requestBody)
-        if (savedData.isDeleted !== false) {
+        
+        if (requestBody.isDeleted == true) {
             return res.status(400).send({ status: false, msg: "isDeleted must be false" })
         }
+
+        let savedData = await internModel.create(requestBody)
         res.status(201).send({ status: true, data: savedData })
     }
     catch (err) {

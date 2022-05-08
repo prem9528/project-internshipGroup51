@@ -42,16 +42,17 @@ const createCollege = async function (req, res) {
             return res.status(400).send({ status: false, message: "logoLink is required" })
         }
         if (!isValidURL(logoLink)) {
-            res.status(400).send({ status: false, message:"logo url is not valid! Please Enter a valid url"})
-            return}
+            res.status(400).send({ status: false, message: "logo url is not valid! Please Enter a valid url" })
+            return
+        }
 
-        const isNamePresent = await collegeModel.findOne({ name: name })
+        const isNamePresent = await collegeModel.findOne({ name: name, isDeleted: false })
 
         if (isNamePresent) {
             return res.status(400).send({ status: false, message: "name already exist" })
         }
         const newCollege = await collegeModel.create(requestBody)
-        
+
         res.status(201).send({ status: true, message: "new college entry created", data: newCollege })
 
 
@@ -93,7 +94,7 @@ const getCollege = async function (req, res) {
             interns: intersByCollegeId
         }
 
-        res.status(200).send({ status: true, data: data })
+        res.status(200).send({ status: true, data: data})
 
     } catch (error) {
         res.status(500).send({ error: error.message })

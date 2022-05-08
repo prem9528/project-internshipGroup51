@@ -44,19 +44,19 @@ const createIntern = async function (req, res) {
             return res.status(400).send({ status: false, message: "collegeName must be provided" })
         }
 
-        const emailPresent = await internModel.findOne({ email: email })
+        const emailPresent = await internModel.findOne({ email: email, isDeleted: false })
 
         if (emailPresent) {
-            return res.status(422).send({ status: false, error: `${email} this Email already exist` })
+            return res.status(400).send({ status: false, error: `${email} this Email already exist` })
         }
 
 
-        let mobilePresent = await internModel.findOne({ mobile: mobile })
+        let mobilePresent = await internModel.findOne({ mobile: mobile, isDeleted: false })
         if (mobilePresent) {
-            return res.status(422).send({ status: false, error: `${mobile} this number already exist` })
+            return res.status(400).send({ status: false, error: `${mobile} this number already exist` })
         }
 
-        const collegeNamePresent = await collegeModel.findOne({ name: collegeName })
+        const collegeNamePresent = await collegeModel.findOne({ name: collegeName, isDeleted: false })
 
         if (!collegeNamePresent) {
             return res.status(400).send({ status: false, message: `no college found by this name: ${collegeName}` })
